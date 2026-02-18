@@ -1,217 +1,323 @@
-// List of available countries with their timezones
-const countriesData = [
-  { name: 'Argentina', timeZone: 'America/Argentina/Buenos_Aires', shortTZ: 'ART' },
-  { name: 'Austria', timeZone: 'Europe/Vienna', shortTZ: 'CET' },
-  { name: 'Bahrain', timeZone: 'Asia/Bahrain', shortTZ: 'AST' },
-  { name: 'Bangladesh', timeZone: 'Asia/Dhaka', shortTZ: 'BST' },
-  { name: 'Belgium', timeZone: 'Europe/Brussels', shortTZ: 'CET' },
-  { name: 'Brazil', timeZone: 'America/Sao_Paulo', shortTZ: 'BRT' },
-  { name: 'Cambodia', timeZone: 'Asia/Phnom_Penh', shortTZ: 'ICT' },
-  { name: 'Cameroon', timeZone: 'Africa/Douala', shortTZ: 'WAT' },
-  { name: 'Canada', timeZone: 'America/Toronto', shortTZ: 'EST' },
-  { name: 'China', timeZone: 'Asia/Shanghai', shortTZ: 'CST' },
-  { name: 'Colombia', timeZone: 'America/Bogota', shortTZ: 'COT' },
-  { name: 'Denmark', timeZone: 'Europe/Copenhagen', shortTZ: 'CET' },
-  { name: 'Dominican Republic', timeZone: 'America/Santo_Domingo', shortTZ: 'AST' },
-  { name: 'Estonia', timeZone: 'Europe/Tallinn', shortTZ: 'EET' },
-  { name: 'France', timeZone: 'Europe/Paris', shortTZ: 'CET' },
-  { name: 'Georgia', timeZone: 'Asia/Tbilisi', shortTZ: 'GET' },
-  { name: 'Germany', timeZone: 'Europe/Berlin', shortTZ: 'CET' },
-  { name: 'Hong Kong', timeZone: 'Asia/Hong_Kong', shortTZ: 'HKT' },
-  { name: 'India', timeZone: 'Asia/Kolkata', shortTZ: 'IST' },
-  { name: 'Israel', timeZone: 'Asia/Jerusalem', shortTZ: 'IST' },
-  { name: 'Italy', timeZone: 'Europe/Rome', shortTZ: 'CET' },
-  { name: 'Ivory Coast', timeZone: 'Africa/Abidjan', shortTZ: 'GMT' },
-  { name: 'Kazakhstan', timeZone: 'Asia/Almaty', shortTZ: 'ALMT' },
-  { name: 'Kenya', timeZone: 'Africa/Nairobi', shortTZ: 'EAT' },
-  { name: 'Laos', timeZone: 'Asia/Vientiane', shortTZ: 'ICT' },
-  { name: 'Malaysia', timeZone: 'Asia/Kuala_Lumpur', shortTZ: 'MYT' },
-  { name: 'Mexico', timeZone: 'America/Mexico_City', shortTZ: 'CST' },
-  { name: 'Moldova', timeZone: 'Europe/Chisinau', shortTZ: 'EET' },
-  { name: 'Morocco', timeZone: 'Africa/Casablanca', shortTZ: 'WET' },
-  { name: 'Mozambique', timeZone: 'Africa/Maputo', shortTZ: 'CAT' },
-  { name: 'Netherlands', timeZone: 'Europe/Amsterdam', shortTZ: 'CET' },
-  { name: 'Nigeria', timeZone: 'Africa/Lagos', shortTZ: 'WAT' },
-  { name: 'Norway', timeZone: 'Europe/Oslo', shortTZ: 'CET' },
-  { name: 'Pakistan', timeZone: 'Asia/Karachi', shortTZ: 'PKT' },
-  { name: 'Panama', timeZone: 'America/Panama', shortTZ: 'EST' },
-  { name: 'Portugal', timeZone: 'Europe/Lisbon', shortTZ: 'WET' },
-  { name: 'Qatar', timeZone: 'Asia/Qatar', shortTZ: 'AST' },
-  { name: 'Saudi Arabia', timeZone: 'Asia/Riyadh', shortTZ: 'AST' },
-  { name: 'Singapore', timeZone: 'Asia/Singapore', shortTZ: 'SGT' },
-  { name: 'South Africa', timeZone: 'Africa/Johannesburg', shortTZ: 'SAST' },
-  { name: 'Spain', timeZone: 'Europe/Madrid', shortTZ: 'CET' },
-  { name: 'Sri Lanka', timeZone: 'Asia/Colombo', shortTZ: 'SLST' },
-  { name: 'Switzerland', timeZone: 'Europe/Zurich', shortTZ: 'CET' },
-  { name: 'Ukraine', timeZone: 'Europe/Kiev', shortTZ: 'EET' },
-  { name: 'United Arab Emirates', timeZone: 'Asia/Dubai', shortTZ: 'GST' },
-  { name: 'United Kingdom', timeZone: 'Europe/London', shortTZ: 'GMT' },
-  { name: 'United States', timeZone: 'America/New_York', shortTZ: 'EST' },
-  { name: 'Venezuela', timeZone: 'America/Caracas', shortTZ: 'VET' },
-  { name: 'Zimbabwe', timeZone: 'Africa/Harare', shortTZ: 'CAT' }
+// Available timezones with city/country names
+const timezonesData = [
+  { timezone: 'America/Los_Angeles', city: 'Cupertino', country: 'United States', offset: -8 },
+  { timezone: 'America/New_York', city: 'New York', country: 'United States', offset: -5 },
+  { timezone: 'America/Chicago', city: 'Chicago', country: 'United States', offset: -6 },
+  { timezone: 'America/Denver', city: 'Denver', country: 'United States', offset: -7 },
+  { timezone: 'America/Toronto', city: 'Toronto', country: 'Canada', offset: -5 },
+  { timezone: 'America/Vancouver', city: 'Vancouver', country: 'Canada', offset: -8 },
+  { timezone: 'Europe/London', city: 'London', country: 'United Kingdom', offset: 0 },
+  { timezone: 'Europe/Paris', city: 'Paris', country: 'France', offset: 1 },
+  { timezone: 'Europe/Berlin', city: 'Berlin', country: 'Germany', offset: 1 },
+  { timezone: 'Europe/Rome', city: 'Rome', country: 'Italy', offset: 1 },
+  { timezone: 'Europe/Madrid', city: 'Madrid', country: 'Spain', offset: 1 },
+  { timezone: 'Europe/Amsterdam', city: 'Amsterdam', country: 'Netherlands', offset: 1 },
+  { timezone: 'Europe/Stockholm', city: 'Stockholm', country: 'Sweden', offset: 1 },
+  { timezone: 'Europe/Zurich', city: 'Zurich', country: 'Switzerland', offset: 1 },
+  { timezone: 'Europe/Vienna', city: 'Vienna', country: 'Austria', offset: 1 },
+  { timezone: 'Asia/Tokyo', city: 'Tokyo', country: 'Japan', offset: 9 },
+  { timezone: 'Asia/Shanghai', city: 'Shanghai', country: 'China', offset: 8 },
+  { timezone: 'Asia/Hong_Kong', city: 'Hong Kong', country: 'Hong Kong', offset: 8 },
+  { timezone: 'Asia/Singapore', city: 'Singapore', country: 'Singapore', offset: 8 },
+  { timezone: 'Asia/Dubai', city: 'Dubai', country: 'United Arab Emirates', offset: 4 },
+  { timezone: 'Asia/Kolkata', city: 'Mumbai', country: 'India', offset: 5.5 },
+  { timezone: 'Asia/Dhaka', city: 'Dhaka', country: 'Bangladesh', offset: 6 },
+  { timezone: 'Asia/Karachi', city: 'Karachi', country: 'Pakistan', offset: 5 },
+  { timezone: 'Asia/Bangkok', city: 'Bangkok', country: 'Thailand', offset: 7 },
+  { timezone: 'Asia/Jakarta', city: 'Jakarta', country: 'Indonesia', offset: 7 },
+  { timezone: 'Asia/Seoul', city: 'Seoul', country: 'South Korea', offset: 9 },
+  { timezone: 'Australia/Sydney', city: 'Sydney', country: 'Australia', offset: 11 },
+  { timezone: 'Australia/Melbourne', city: 'Melbourne', country: 'Australia', offset: 11 },
+  { timezone: 'Australia/Brisbane', city: 'Brisbane', country: 'Australia', offset: 10 },
+  { timezone: 'Pacific/Auckland', city: 'Auckland', country: 'New Zealand', offset: 13 },
+  { timezone: 'America/Sao_Paulo', city: 'São Paulo', country: 'Brazil', offset: -3 },
+  { timezone: 'America/Mexico_City', city: 'Mexico City', country: 'Mexico', offset: -6 },
+  { timezone: 'America/Buenos_Aires', city: 'Buenos Aires', country: 'Argentina', offset: -3 },
+  { timezone: 'Africa/Johannesburg', city: 'Johannesburg', country: 'South Africa', offset: 2 },
+  { timezone: 'Africa/Cairo', city: 'Cairo', country: 'Egypt', offset: 2 },
+  { timezone: 'Asia/Riyadh', city: 'Riyadh', country: 'Saudi Arabia', offset: 3 },
+  { timezone: 'Asia/Tel_Aviv', city: 'Tel Aviv', country: 'Israel', offset: 2 },
+  { timezone: 'Europe/Moscow', city: 'Moscow', country: 'Russia', offset: 3 },
+  { timezone: 'Asia/Istanbul', city: 'Istanbul', country: 'Turkey', offset: 3 }
 ];
 
-// All countries with IDs for display
-const allCountries = countriesData.map((country, index) => ({
-  id: `country-${index}`,
-  ...country
-}));
+// Settings
+let settings = {
+  timeFormat: '24', // '24' or '12'
+  dateFormat: 'short' // 'short', 'long', or 'numeric'
+};
 
-// Currently displayed countries (starts with all, filtered by search)
-let displayedCountries = [...allCountries];
+// Pinned clocks (stored in localStorage)
+let pinnedClocks = JSON.parse(localStorage.getItem('pinnedClocks') || '[]');
 
-// DOM elements
-const cardsGrid = document.querySelector('.cards-grid');
-const searchInput = document.getElementById('search-input');
+// Initialize default clocks if none exist
+if (pinnedClocks.length === 0) {
+  pinnedClocks = [
+    { timezone: 'America/Los_Angeles', city: 'Cupertino', country: 'United States', offset: -8 },
+    { timezone: 'Asia/Tokyo', city: 'Tokyo', country: 'Japan', offset: 9 },
+    { timezone: 'Australia/Sydney', city: 'Sydney', country: 'Australia', offset: 11 },
+    { timezone: 'Europe/Paris', city: 'Paris', country: 'France', offset: 1 }
+  ];
+  localStorage.setItem('pinnedClocks', JSON.stringify(pinnedClocks));
+}
 
-// Detect user's country on load
-async function detectUserCountry() {
+// DOM Elements
+const localTimeElement = document.getElementById('local-time');
+const localDateElement = document.getElementById('local-date');
+const localTimezoneTag = document.getElementById('local-timezone-tag');
+const localFormatIndicator = document.getElementById('local-format-indicator');
+const worldClocksGrid = document.getElementById('world-clocks-grid');
+const timeFormatSelect = document.getElementById('time-format');
+const dateFormatSelect = document.getElementById('date-format');
+const addClockBtn = document.getElementById('add-clock-btn');
+const modalOverlay = document.getElementById('modal-overlay');
+const modalClose = document.getElementById('modal-close');
+const clockSearchInput = document.getElementById('clock-search');
+const clockOptions = document.getElementById('clock-options');
+
+// Detect user's local timezone
+function detectLocalTimezone() {
   try {
-    const response = await fetch('https://ipapi.co/json/');
-    const data = await response.json();
-    const userCountry = countriesData.find(c =>
-      c.name.toLowerCase().includes(data.country_name.toLowerCase()) ||
-      data.country_name.toLowerCase().includes(c.name.toLowerCase())
-    );
-
-    if (userCountry && !displayedCountries.some(dc => dc.name === userCountry.name)) {
-      // Add detected country as first card if not already displayed
-      displayedCountries.unshift({ id: `country-${Date.now()}`, ...userCountry });
-      updateCards();
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const tzData = timezonesData.find(tz => tz.timezone === timezone);
+    
+    if (tzData) {
+      localTimezoneTag.textContent = timezone.replace(/_/g, ' ');
+    } else {
+      // Format timezone name nicely
+      localTimezoneTag.textContent = timezone.split('/').pop().replace(/_/g, ' ');
     }
   } catch (error) {
-    console.log('Could not detect user country:', error);
-    // Fallback: do nothing, keep original cards
+    localTimezoneTag.textContent = 'Local Timezone';
   }
 }
 
-// Filter countries based on search query (FOUND-style logic)
-function filterCountries(query) {
-  if (!query.trim()) {
-    // If no query, show ALL countries
-    displayedCountries = [...allCountries];
-  } else {
-    // Find the first matching country (case-insensitive, partial match)
-    const foundCountry = countriesData.find(country =>
-      country.name.toLowerCase().includes(query.toLowerCase())
-    );
-
-    if (foundCountry) {
-      // If found, show only that country
-      displayedCountries = [{ id: `search-${foundCountry.name.toLowerCase().replace(/\s+/g, '-')}`, ...foundCountry }];
-    } else {
-      // If not found, show "No data found" state
-      displayedCountries = [{ id: 'no-data', name: 'No data found', timeZone: '', shortTZ: '' }];
-    }
+// Format time based on settings
+function formatTime(date, timezone = null) {
+  const options = {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: settings.timeFormat === '12'
+  };
+  
+  if (timezone) {
+    options.timeZone = timezone;
   }
-  updateCards();
+  
+  return new Intl.DateTimeFormat('en-US', options).format(date);
 }
 
-// Get time of day in English
-function getTimeOfDay(hour, minute) {
-  const totalMinutes = hour * 60 + minute;
-
-  if (totalMinutes >= 300 && totalMinutes <= 719) {
-    return "Morning"; // 5:00 AM - 11:59 AM
-  } else if (totalMinutes >= 720 && totalMinutes <= 779) {
-    return "Noon"; // 12:00 PM - 12:59 PM
-  } else if (totalMinutes >= 780 && totalMinutes <= 1079) {
-    return "Afternoon"; // 1:00 PM - 5:59 PM
-  } else {
-    return "Night"; // 6:00 PM - 4:59 AM
+// Format date based on settings
+function formatDate(date, timezone = null) {
+  let options;
+  
+  switch (settings.dateFormat) {
+    case 'long':
+      options = {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+      };
+      break;
+    case 'numeric':
+      options = {
+        month: 'numeric',
+        day: 'numeric',
+        year: 'numeric'
+      };
+      break;
+    case 'short':
+    default:
+      options = {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      };
+      break;
   }
+  
+  if (timezone) {
+    options.timeZone = timezone;
+  }
+  
+  return new Intl.DateTimeFormat('en-US', options).format(date);
 }
 
-// Update time for all displayed countries
-function updateTime() {
-  displayedCountries.forEach(country => {
-    const card = document.getElementById(country.id);
-    if (!card) return;
-
-    if (country.id === 'no-data') {
-      // Special case for "No data found"
-      card.innerHTML = `
-        <div class="card-country">${country.name}</div>
-        <div class="card-date">--</div>
-        <div class="card-period">--</div>
-        <div class="card-time">--</div>
-        <div class="card-timezone">--</div>
-      `;
-      return;
-    }
-
-    const now = new Date();
-
-    // Get time in target timezone
-    const localeTime = new Date(now.toLocaleString("en-US", { timeZone: country.timeZone }));
-    const hour = localeTime.getHours();
-    const minute = localeTime.getMinutes();
-    const second = localeTime.getSeconds();
-
-    const timeOfDay = getTimeOfDay(hour, minute);
-
-    const optionsDate = {
-      timeZone: country.timeZone,
-      day: '2-digit',
-      month: 'long',
-      year: 'numeric'
-    };
-    const optionsTime = {
-      timeZone: country.timeZone,
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: true
-    };
-
-    const date = new Intl.DateTimeFormat('en-US', optionsDate).format(now);
-    const time = new Intl.DateTimeFormat('en-US', optionsTime).format(now);
-
-    card.innerHTML = `
-      <div class="card-country">${country.name}</div>
-      <div class="card-date">${date}</div>
-      <div class="card-period">${timeOfDay}</div>
-      <div class="card-time">${time}</div>
-      <div class="card-timezone">${country.shortTZ}</div>
-      ${displayedCountries.length > 3 && country.id !== 'no-data' ? '<button class="remove-btn" onclick="removeCountry(\'' + country.id + '\')">×</button>' : ''}
-    `;
-  });
+// Get UTC offset string
+function getUTCOffset(offset) {
+  const sign = offset >= 0 ? '+' : '';
+  return `UTC${sign}${offset}`;
 }
 
-// Create initial cards
-function createCards() {
-  cardsGrid.innerHTML = '';
-  displayedCountries.forEach((country, index) => {
+// Update local time display
+function updateLocalTime() {
+  const now = new Date();
+  localTimeElement.textContent = formatTime(now);
+  localDateElement.textContent = formatDate(now);
+  localFormatIndicator.textContent = `${settings.timeFormat === '24' ? '24' : '12'}-hour format`;
+}
+
+// Update world clocks
+function updateWorldClocks() {
+  worldClocksGrid.innerHTML = '';
+  
+  pinnedClocks.forEach(clock => {
     const card = document.createElement('div');
-    card.className = 'card';
-    card.id = country.id;
-    card.style.animationDelay = `${index * 0.1}s`;
-    cardsGrid.appendChild(card);
+    card.className = 'clock-card';
+    
+    const now = new Date();
+    const time = formatTime(now, clock.timezone);
+    const date = formatDate(now, clock.timezone);
+    const utcOffset = getUTCOffset(clock.offset);
+    
+    card.innerHTML = `
+      <div class="clock-header">
+        <div class="clock-location">
+          <span class="location-dot"></span>
+          <span class="location-text">${clock.city} / ${clock.country}</span>
+        </div>
+        <span class="pinned-label">Pinned zone</span>
+      </div>
+      <div class="clock-time">${time}</div>
+      <div class="clock-date">${date}</div>
+      <div class="clock-footer">
+        <span class="clock-utc">${utcOffset}</span>
+        <button class="remove-clock-btn" onclick="removeClock('${clock.timezone}')" title="Remove clock">
+          <span style="font-size: 1rem;">−</span>
+        </button>
+      </div>
+    `;
+    
+    worldClocksGrid.appendChild(card);
   });
 }
 
-// Update cards (for adding/removing)
-function updateCards() {
-  createCards();
-  updateTime();
+// Remove clock
+function removeClock(timezone) {
+  pinnedClocks = pinnedClocks.filter(clock => clock.timezone !== timezone);
+  localStorage.setItem('pinnedClocks', JSON.stringify(pinnedClocks));
+  updateWorldClocks();
 }
 
-// Remove a country card
-function removeCountry(countryId) {
-  displayedCountries = displayedCountries.filter(c => c.id !== countryId);
-  updateCards();
+// Open add clock modal
+function openAddClockModal() {
+  modalOverlay.classList.add('active');
+  clockSearchInput.value = '';
+  populateClockOptions();
+  clockSearchInput.focus();
 }
 
-// Event listeners
-searchInput.addEventListener('input', (e) => {
-  filterCountries(e.target.value);
+// Close add clock modal
+function closeAddClockModal() {
+  modalOverlay.classList.remove('active');
+}
+
+// Populate clock options
+function populateClockOptions(searchQuery = '') {
+  clockOptions.innerHTML = '';
+  
+  const query = searchQuery.toLowerCase().trim();
+  const filtered = timezonesData.filter(tz => {
+    if (!query) return true;
+    return tz.city.toLowerCase().includes(query) ||
+           tz.country.toLowerCase().includes(query) ||
+           tz.timezone.toLowerCase().includes(query);
+  });
+  
+  // Filter out already pinned clocks
+  const available = filtered.filter(tz => 
+    !pinnedClocks.some(pinned => pinned.timezone === tz.timezone)
+  );
+  
+  if (available.length === 0) {
+    clockOptions.innerHTML = '<div style="padding: 20px; text-align: center; color: #E0E0E0; opacity: 0.6;">No available clocks found</div>';
+    return;
+  }
+  
+  available.forEach(tz => {
+    const option = document.createElement('div');
+    option.className = 'clock-option';
+    option.innerHTML = `
+      <div>
+        <div class="clock-option-name">${tz.city} / ${tz.country}</div>
+        <div class="clock-option-timezone">${tz.timezone}</div>
+      </div>
+    `;
+    
+    option.addEventListener('click', () => {
+      addClock(tz);
+      closeAddClockModal();
+    });
+    
+    clockOptions.appendChild(option);
+  });
+}
+
+// Add clock
+function addClock(clockData) {
+  // Check if already pinned
+  if (pinnedClocks.some(c => c.timezone === clockData.timezone)) {
+    return;
+  }
+  
+  pinnedClocks.push(clockData);
+  localStorage.setItem('pinnedClocks', JSON.stringify(pinnedClocks));
+  updateWorldClocks();
+}
+
+// Update all clocks
+function updateAllClocks() {
+  updateLocalTime();
+  updateWorldClocks();
+}
+
+// Event Listeners
+timeFormatSelect.addEventListener('change', (e) => {
+  settings.timeFormat = e.target.value;
+  localStorage.setItem('settings', JSON.stringify(settings));
+  updateAllClocks();
 });
 
+dateFormatSelect.addEventListener('change', (e) => {
+  settings.dateFormat = e.target.value;
+  localStorage.setItem('settings', JSON.stringify(settings));
+  updateAllClocks();
+});
+
+addClockBtn.addEventListener('click', openAddClockModal);
+modalClose.addEventListener('click', closeAddClockModal);
+
+modalOverlay.addEventListener('click', (e) => {
+  if (e.target === modalOverlay) {
+    closeAddClockModal();
+  }
+});
+
+clockSearchInput.addEventListener('input', (e) => {
+  populateClockOptions(e.target.value);
+});
+
+// Load saved settings
+const savedSettings = localStorage.getItem('settings');
+if (savedSettings) {
+  settings = { ...settings, ...JSON.parse(savedSettings) };
+  timeFormatSelect.value = settings.timeFormat;
+  dateFormatSelect.value = settings.dateFormat;
+}
+
 // Initialize
-document.addEventListener('DOMContentLoaded', () => {
-  createCards();
-  detectUserCountry().then(() => {
-    updateTime();
-    setInterval(updateTime, 1000);
-  });
+detectLocalTimezone();
+updateAllClocks();
+
+// Update every second
+setInterval(updateAllClocks, 1000);
+
+// Handle keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
+    closeAddClockModal();
+  }
 });
