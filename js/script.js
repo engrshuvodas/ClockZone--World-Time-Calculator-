@@ -160,13 +160,72 @@ function updateLocalTime() {
   localFormatIndicator.textContent = `${settings.timeFormat === '24' ? '24' : '12'}-hour format`;
 }
 
-// Update world clocks
-function updateWorldClocks() {
-  worldClocksGrid.innerHTML = '';
+// 3D Tilt Effect for Cards
+function add3DTiltEffect(card) {
+  card.addEventListener('mousemove', (e) => {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    
+    const rotateX = (y - centerY) / 10;
+    const rotateY = (centerX - x) / 10;
+    
+    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px) scale(1.02)`;
+  });
   
-  pinnedClocks.forEach(clock => {
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0) scale(1)';
+  });
+  
+  card.addEventListener('mouseenter', () => {
+    card.style.transition = 'transform 0.1s ease-out';
+  });
+}
+
+// 3D Tilt Effect for Local Time Card
+function add3DTiltToLocalCard() {
+  const localCard = document.querySelector('.local-time-card');
+  if (localCard) {
+    localCard.addEventListener('mousemove', (e) => {
+      const rect = localCard.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      const rotateX = (y - centerY) / 15;
+      const rotateY = (centerX - x) / 15;
+      
+      localCard.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px) scale(1.02)`;
+    });
+    
+    localCard.addEventListener('mouseleave', () => {
+      localCard.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0) scale(1)';
+    });
+    
+    localCard.addEventListener('mouseenter', () => {
+      localCard.style.transition = 'transform 0.1s ease-out';
+    });
+  }
+}
+
+// Store card references for efficient updates
+let clockCardElements = new Map();
+
+// Create world clock cards (only called when clocks are added/removed)
+function createWorldClockCards() {
+  worldClocksGrid.innerHTML = '';
+  clockCardElements.clear();
+  
+  pinnedClocks.forEach((clock, index) => {
     const card = document.createElement('div');
     card.className = 'clock-card';
+    card.style.animationDelay = `${index * 0.1}s`;
+    card.dataset.timezone = clock.timezone;
     
     const now = new Date();
     const time = formatTime(now, clock.timezone);
@@ -192,15 +251,53 @@ function updateWorldClocks() {
     `;
     
     worldClocksGrid.appendChild(card);
+    
+    // Store card reference
+    clockCardElements.set(clock.timezone, {
+      card: card,
+      timeElement: card.querySelector('.clock-time'),
+      dateElement: card.querySelector('.clock-date'),
+      utcElement: card.querySelector('.clock-utc')
+    });
+    
+    // Add 3D tilt effect after a short delay to ensure DOM is ready
+    setTimeout(() => {
+      add3DTiltEffect(card);
+    }, 50);
   });
+}
+
+// Update world clocks (only updates time/date, doesn't recreate cards)
+function updateWorldClocks() {
+  const now = new Date();
+  
+  pinnedClocks.forEach(clock => {
+    const cardData = clockCardElements.get(clock.timezone);
+    if (cardData) {
+      // Only update the time, date, and UTC text - don't recreate the card
+      cardData.timeElement.textContent = formatTime(now, clock.timezone);
+      cardData.dateElement.textContent = formatDate(now, clock.timezone);
+      cardData.utcElement.textContent = getUTCOffset(clock.offset);
+    }
+  });
+  
+  // If cards don't exist yet (first load), create them
+  if (clockCardElements.size === 0 && pinnedClocks.length > 0) {
+    createWorldClockCards();
+  }
 }
 
 // Remove clock
 function removeClock(timezone) {
   pinnedClocks = pinnedClocks.filter(clock => clock.timezone !== timezone);
   localStorage.setItem('pinnedClocks', JSON.stringify(pinnedClocks));
-  updateWorldClocks();
+  // Recreate cards when removing (since structure changes)
+  createWorldClockCards();
+  add3DTiltToLocalCard();
 }
+
+// Make removeClock globally accessible
+window.removeClock = removeClock;
 
 // Open add clock modal
 function openAddClockModal() {
@@ -265,13 +362,16 @@ function addClock(clockData) {
   
   pinnedClocks.push(clockData);
   localStorage.setItem('pinnedClocks', JSON.stringify(pinnedClocks));
-  updateWorldClocks();
+  // Recreate cards when adding (since structure changes)
+  createWorldClockCards();
+  add3DTiltToLocalCard();
 }
 
 // Update all clocks
 function updateAllClocks() {
   updateLocalTime();
   updateWorldClocks();
+  // No need to re-initialize 3D effects - they're already attached
 }
 
 // Event Listeners
@@ -308,9 +408,80 @@ if (savedSettings) {
   dateFormatSelect.value = settings.dateFormat;
 }
 
+// Add smooth number transitions for time updates
+function animateNumberChange(element, newValue, oldValue) {
+  if (oldValue === newValue) return;
+  
+  const duration = 300;
+  const startTime = performance.now();
+  
+  function update(currentTime) {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    
+    // Easing function
+    const ease = progress < 0.5 
+      ? 2 * progress * progress 
+      : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+    
+    if (progress < 1) {
+      requestAnimationFrame(update);
+    }
+  }
+  
+  requestAnimationFrame(update);
+}
+
+// Add parallax effect to background
+function initParallaxEffect() {
+  let mouseX = 0;
+  let mouseY = 0;
+  
+  document.addEventListener('mousemove', (e) => {
+    mouseX = (e.clientX / window.innerWidth - 0.5) * 20;
+    mouseY = (e.clientY / window.innerHeight - 0.5) * 20;
+    
+    document.body.style.setProperty('--mouse-x', `${mouseX}px`);
+    document.body.style.setProperty('--mouse-y', `${mouseY}px`);
+  });
+}
+
+// Add ripple effect to buttons
+function addRippleEffect(button) {
+  button.addEventListener('click', function(e) {
+    const ripple = document.createElement('span');
+    const rect = this.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    const x = e.clientX - rect.left - size / 2;
+    const y = e.clientY - rect.top - size / 2;
+    
+    ripple.style.width = ripple.style.height = size + 'px';
+    ripple.style.left = x + 'px';
+    ripple.style.top = y + 'px';
+    ripple.classList.add('ripple');
+    
+    this.appendChild(ripple);
+    
+    setTimeout(() => {
+      ripple.remove();
+    }, 600);
+  });
+}
+
 // Initialize
 detectLocalTimezone();
-updateAllClocks();
+createWorldClockCards(); // Create cards once on load
+updateAllClocks(); // Update times
+add3DTiltToLocalCard();
+initParallaxEffect();
+
+// Add ripple effects to buttons
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    const buttons = document.querySelectorAll('.add-clock-btn, .dropdown, .clock-option');
+    buttons.forEach(btn => addRippleEffect(btn));
+  }, 100);
+});
 
 // Update every second
 setInterval(updateAllClocks, 1000);
@@ -320,4 +491,18 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
     closeAddClockModal();
   }
+});
+
+// Add smooth scroll behavior
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  });
 });
