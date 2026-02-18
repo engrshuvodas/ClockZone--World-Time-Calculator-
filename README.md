@@ -95,9 +95,9 @@
 - Smooth transitions and animations
 
 ### Live Demo
-Visit the [live demo](https://engrshuvodas.github.io/Multi-Country-Time/)
+Visit the [live demo](https://clockzone-ten.vercel.app/)
 
-**About Page**: [View Version History & Developer Info](https://engrshuvodas.github.io/Multi-Country-Time/about.html)
+**About Page**: [View Version History & Developer Info](https://clockzone-ten.vercel.app/about.html)
 
 ---
 
@@ -111,7 +111,7 @@ Visit the [live demo](https://engrshuvodas.github.io/Multi-Country-Time/)
 
 1. **Clone the repository**  
    ```bash
-   git clone https://github.com/engrshuvodas/Multi-Country-Time.git
+   git clone https://github.com/engrshuvodas/ClockZone--World-Time-Calculator-.git
    cd Multi-Country-Time
    ```
 
