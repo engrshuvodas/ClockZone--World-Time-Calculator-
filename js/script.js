@@ -76,11 +76,20 @@ const clockSearchInput = document.getElementById('clock-search');
 const clockOptions = document.getElementById('clock-options');
 
 // Time Converter Elements
-const clientTimeInput = document.getElementById('client-time');
-const clientDateInput = document.getElementById('client-date');
-const clientTimezoneSelect = document.getElementById('client-timezone');
+const sourceTimeInput = document.getElementById('source-time');
+const sourceDateInput = document.getElementById('source-date');
+const sourceTimezoneSelect = document.getElementById('source-timezone');
 const convertBtn = document.getElementById('convert-btn');
 const converterResults = document.getElementById('converter-results');
+const converterModeToggle = document.getElementById('converter-mode-toggle');
+const converterDescription = document.getElementById('converter-description');
+const sourceTimeLabel = document.getElementById('source-time-label');
+const sourceTimezoneLabel = document.getElementById('source-timezone-label');
+const modeLabelForward = document.getElementById('mode-label-forward');
+const modeLabelReverse = document.getElementById('mode-label-reverse');
+
+// Converter mode: 'forward' = client to local, 'reverse' = local to client
+let converterMode = 'forward';
 
 // User's local timezone
 let userLocalTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -116,17 +125,48 @@ function populateTimezoneDropdown() {
     const option = document.createElement('option');
     option.value = tz.timezone;
     option.textContent = `${tz.city} / ${tz.country} (${tz.timezone})`;
-    clientTimezoneSelect.appendChild(option);
+    sourceTimezoneSelect.appendChild(option);
   });
 }
 
-// Convert time from client timezone to local and other timezones
-function convertTime() {
-  const clientTime = clientTimeInput.value;
-  const clientDate = clientDateInput.value;
-  const clientTimezone = clientTimezoneSelect.value;
+// Update converter UI based on mode
+function updateConverterMode() {
+  if (converterMode === 'reverse') {
+    // Reverse mode: Local → Client
+    converterDescription.textContent = 'Convert your local meeting time to your client\'s timezone instantly.';
+    sourceTimeLabel.textContent = 'Your Time (Local)';
+    sourceTimezoneLabel.textContent = 'Client Timezone';
+    modeLabelForward.classList.remove('active');
+    modeLabelReverse.classList.add('active');
+  } else {
+    // Forward mode: Client → Local
+    converterDescription.textContent = 'Convert client meeting times to your local timezone instantly.';
+    sourceTimeLabel.textContent = 'Client Time';
+    sourceTimezoneLabel.textContent = 'Client Timezone';
+    modeLabelForward.classList.add('active');
+    modeLabelReverse.classList.remove('active');
+  }
   
-  if (!clientTime || !clientDate || !clientTimezone) {
+  // Clear results when switching modes
+  converterResults.innerHTML = `
+    <div class="result-placeholder">
+      <p>Enter a time and timezone to see the conversion</p>
+    </div>
+  `;
+  
+  // Clear inputs
+  sourceTimeInput.value = '';
+  sourceDateInput.valueAsDate = new Date();
+  sourceTimezoneSelect.value = '';
+}
+
+// Convert time based on current mode
+function convertTime() {
+  const sourceTime = sourceTimeInput.value;
+  const sourceDate = sourceDateInput.value;
+  const sourceTimezone = sourceTimezoneSelect.value;
+  
+  if (!sourceTime || !sourceDate || !sourceTimezone) {
     converterResults.innerHTML = `
       <div class="result-placeholder">
         <p>Please fill in all fields to convert the time</p>
@@ -136,33 +176,108 @@ function convertTime() {
   }
   
   try {
-    const [hours, minutes] = clientTime.split(':');
-    const [year, month, day] = clientDate.split('-');
-    
-    // Use a reliable method: create date in UTC that represents the time in client timezone
-    // We'll use iterative adjustment to find the correct UTC time
-    const utcTime = findUTCTimeForTimezoneTime(year, month, day, hours, minutes, clientTimezone);
-    const targetDate = new Date(utcTime);
-    
-    // Format results
-    const results = [];
-    
-    // Add local timezone result
-    const localTime = formatTime(targetDate, userLocalTimezone);
-    const localDate = formatDate(targetDate, userLocalTimezone);
-    const localTzData = timezonesData.find(tz => tz.timezone === userLocalTimezone);
-    const localCity = localTzData ? `${localTzData.city} / ${localTzData.country}` : userLocalTimezone.replace(/_/g, ' ');
+    if (converterMode === 'reverse') {
+      // Reverse: Local time → Client timezone
+      convertReverse(sourceTime, sourceDate, sourceTimezone);
+    } else {
+      // Forward: Client time → Local timezone
+      convertForward(sourceTime, sourceDate, sourceTimezone);
+    }
+  } catch (error) {
+    console.error('Conversion error:', error);
+    converterResults.innerHTML = `
+      <div class="result-placeholder">
+        <p>Error converting time. Please check your inputs.</p>
+      </div>
+    `;
+  }
+}
+
+// Forward conversion: Client time → Local timezone
+function convertForward(clientTime, clientDate, clientTimezone) {
+  const [hours, minutes] = clientTime.split(':');
+  const [year, month, day] = clientDate.split('-');
+  
+  // Find UTC time that represents the given time in client timezone
+  const utcTime = findUTCTimeForTimezoneTime(year, month, day, hours, minutes, clientTimezone);
+  const targetDate = new Date(utcTime);
+  
+  // Format results
+  const results = [];
+  
+  // Add local timezone result
+  const localTime = formatTime(targetDate, userLocalTimezone);
+  const localDate = formatDate(targetDate, userLocalTimezone);
+  const localTzData = timezonesData.find(tz => tz.timezone === userLocalTimezone);
+  const localCity = localTzData ? `${localTzData.city} / ${localTzData.country}` : userLocalTimezone.replace(/_/g, ' ');
+  
+  results.push({
+    timezone: userLocalTimezone,
+    city: localCity,
+    time: localTime,
+    date: localDate,
+    isLocal: true
+  });
+  
+  // Add all pinned clocks
+  pinnedClocks.forEach(clock => {
+    const clockTime = formatTime(targetDate, clock.timezone);
+    const clockDate = formatDate(targetDate, clock.timezone);
     
     results.push({
-      timezone: userLocalTimezone,
-      city: localCity,
-      time: localTime,
-      date: localDate,
-      isLocal: true
+      timezone: clock.timezone,
+      city: `${clock.city} / ${clock.country}`,
+      time: clockTime,
+      date: clockDate,
+      isLocal: false
     });
-    
-    // Add all pinned clocks
-    pinnedClocks.forEach(clock => {
+  });
+  
+  // Display results
+  displayConversionResults(results, clientTimezone, 'forward');
+}
+
+// Reverse conversion: Local time → Client timezone
+function convertReverse(localTime, localDate, clientTimezone) {
+  const [hours, minutes] = localTime.split(':');
+  const [year, month, day] = localDate.split('-');
+  
+  // Find UTC time that represents the given time in local timezone
+  const utcTime = findUTCTimeForTimezoneTime(year, month, day, hours, minutes, userLocalTimezone);
+  const targetDate = new Date(utcTime);
+  
+  // Format results
+  const results = [];
+  
+  // Add client timezone result (highlighted)
+  const clientTime = formatTime(targetDate, clientTimezone);
+  const clientDate = formatDate(targetDate, clientTimezone);
+  const clientTzData = timezonesData.find(tz => tz.timezone === clientTimezone);
+  const clientCity = clientTzData ? `${clientTzData.city} / ${clientTzData.country}` : clientTimezone.replace(/_/g, ' ');
+  
+  results.push({
+    timezone: clientTimezone,
+    city: clientCity,
+    time: clientTime,
+    date: clientDate,
+    isClient: true
+  });
+  
+  // Add local timezone for reference
+  const localTzData = timezonesData.find(tz => tz.timezone === userLocalTimezone);
+  const localCity = localTzData ? `${localTzData.city} / ${localTzData.country}` : userLocalTimezone.replace(/_/g, ' ');
+  
+  results.push({
+    timezone: userLocalTimezone,
+    city: localCity,
+    time: formatTime(targetDate, userLocalTimezone),
+    date: formatDate(targetDate, userLocalTimezone),
+    isLocal: true
+  });
+  
+  // Add all pinned clocks
+  pinnedClocks.forEach(clock => {
+    if (clock.timezone !== clientTimezone && clock.timezone !== userLocalTimezone) {
       const clockTime = formatTime(targetDate, clock.timezone);
       const clockDate = formatDate(targetDate, clock.timezone);
       
@@ -173,19 +288,11 @@ function convertTime() {
         date: clockDate,
         isLocal: false
       });
-    });
-    
-    // Display results
-    displayConversionResults(results, clientTimezone);
-    
-  } catch (error) {
-    console.error('Conversion error:', error);
-    converterResults.innerHTML = `
-      <div class="result-placeholder">
-        <p>Error converting time. Please check your inputs.</p>
-      </div>
-    `;
-  }
+    }
+  });
+  
+  // Display results
+  displayConversionResults(results, userLocalTimezone, 'reverse');
 }
 
 // Find UTC time that corresponds to a given time in a specific timezone
@@ -239,23 +346,45 @@ function findUTCTimeForTimezoneTime(year, month, day, hours, minutes, timezone) 
 }
 
 // Display conversion results
-function displayConversionResults(results, clientTimezone) {
-  const clientTzData = timezonesData.find(tz => tz.timezone === clientTimezone);
-  const clientCity = clientTzData ? `${clientTzData.city} / ${clientTzData.country}` : clientTimezone.replace(/_/g, ' ');
+function displayConversionResults(results, sourceTimezone, mode) {
+  const sourceTzData = timezonesData.find(tz => tz.timezone === sourceTimezone);
+  const sourceCity = sourceTzData ? `${sourceTzData.city} / ${sourceTzData.country}` : sourceTimezone.replace(/_/g, ' ');
   
-  let html = `
-    <div style="margin-bottom: 24px; padding: 20px; background: rgba(147, 51, 234, 0.1); border-radius: 12px; border: 1px solid rgba(147, 51, 234, 0.2);">
-      <div style="font-size: 0.75rem; font-weight: 600; color: var(--accent-purple); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Client Time</div>
-      <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">${clientTimeInput.value}</div>
-      <div style="font-size: 0.875rem; color: var(--text-secondary); opacity: 0.8;">${clientCity}</div>
-    </div>
-    <div class="converter-result-grid">
-  `;
+  let html = '';
+  
+  if (mode === 'forward') {
+    // Forward mode: Show source (client) time at top
+    html = `
+      <div style="margin-bottom: 24px; padding: 20px; background: rgba(147, 51, 234, 0.1); border-radius: 12px; border: 1px solid rgba(147, 51, 234, 0.2);">
+        <div style="font-size: 0.75rem; font-weight: 600; color: var(--accent-purple); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Client Time</div>
+        <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">${sourceTimeInput.value}</div>
+        <div style="font-size: 0.875rem; color: var(--text-secondary); opacity: 0.8;">${sourceCity}</div>
+      </div>
+    `;
+  } else {
+    // Reverse mode: Show source (local) time at top
+    html = `
+      <div style="margin-bottom: 24px; padding: 20px; background: rgba(76, 175, 80, 0.1); border-radius: 12px; border: 1px solid rgba(76, 175, 80, 0.2);">
+        <div style="font-size: 0.75rem; font-weight: 600; color: var(--accent-green); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Your Local Time</div>
+        <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">${sourceTimeInput.value}</div>
+        <div style="font-size: 0.875rem; color: var(--text-secondary); opacity: 0.8;">${sourceCity}</div>
+      </div>
+    `;
+  }
+  
+  html += '<div class="converter-result-grid">';
   
   results.forEach(result => {
+    let timezoneLabel = result.timezone.replace(/_/g, ' ');
+    if (result.isLocal) {
+      timezoneLabel = 'Your Local Time';
+    } else if (result.isClient) {
+      timezoneLabel = 'Client Time';
+    }
+    
     html += `
-      <div class="converter-result-card ${result.isLocal ? 'local-result' : ''}">
-        <div class="result-timezone">${result.isLocal ? 'Your Local Time' : result.timezone.replace(/_/g, ' ')}</div>
+      <div class="converter-result-card ${result.isLocal ? 'local-result' : ''} ${result.isClient ? 'client-result' : ''}">
+        <div class="result-timezone">${timezoneLabel}</div>
         <div class="result-time">${result.time}</div>
         <div class="result-date">${result.date}</div>
         <div class="result-location">
@@ -595,13 +724,19 @@ clockSearchInput.addEventListener('input', (e) => {
 // Time Converter Event Listeners
 convertBtn.addEventListener('click', convertTime);
 
+// Mode toggle event listener
+converterModeToggle.addEventListener('change', (e) => {
+  converterMode = e.target.checked ? 'reverse' : 'forward';
+  updateConverterMode();
+});
+
 // Auto-convert when inputs change (optional - can be removed if you prefer manual conversion only)
 let convertTimeout;
-[clientTimeInput, clientDateInput, clientTimezoneSelect].forEach(input => {
+[sourceTimeInput, sourceDateInput, sourceTimezoneSelect].forEach(input => {
   input.addEventListener('change', () => {
     clearTimeout(convertTimeout);
     convertTimeout = setTimeout(() => {
-      if (clientTimeInput.value && clientDateInput.value && clientTimezoneSelect.value) {
+      if (sourceTimeInput.value && sourceDateInput.value && sourceTimezoneSelect.value) {
         convertTime();
       }
     }, 500);
@@ -609,7 +744,10 @@ let convertTimeout;
 });
 
 // Set today's date as default
-clientDateInput.valueAsDate = new Date();
+sourceDateInput.valueAsDate = new Date();
+
+// Initialize converter mode
+updateConverterMode();
 
 // Load saved settings
 const savedSettings = localStorage.getItem('settings');

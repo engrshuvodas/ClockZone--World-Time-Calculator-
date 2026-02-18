@@ -53,22 +53,31 @@
         <div class="section-header">
           <div>
             <h2 class="section-title">TIME CONVERTER</h2>
-            <p class="section-description">Convert client meeting times to your local timezone instantly.</p>
+            <p class="section-description" id="converter-description">Convert client meeting times to your local timezone instantly.</p>
+          </div>
+          <div class="converter-mode-toggle">
+            <span class="mode-label" id="mode-label-forward">Client → Local</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="converter-mode-toggle" />
+              <span class="toggle-slider"></span>
+            </label>
+            <span class="mode-label" id="mode-label-reverse">Local → Client</span>
           </div>
         </div>
         <div class="converter-card">
-          <div class="converter-inputs">
-            <div class="converter-input-group">
-              <label for="client-time">Client Time</label>
-              <input type="time" id="client-time" class="time-input" />
+          <div class="converter-inputs" id="converter-inputs">
+            <!-- Forward mode inputs (default) -->
+            <div class="converter-input-group" id="input-group-source-time">
+              <label for="source-time" id="source-time-label">Client Time</label>
+              <input type="time" id="source-time" class="time-input" />
             </div>
             <div class="converter-input-group">
-              <label for="client-date">Date</label>
-              <input type="date" id="client-date" class="date-input" />
+              <label for="source-date">Date</label>
+              <input type="date" id="source-date" class="date-input" />
             </div>
-            <div class="converter-input-group">
-              <label for="client-timezone">Client Timezone</label>
-              <select id="client-timezone" class="timezone-select">
+            <div class="converter-input-group" id="input-group-source-timezone">
+              <label for="source-timezone" id="source-timezone-label">Client Timezone</label>
+              <select id="source-timezone" class="timezone-select">
                 <option value="">Select timezone...</option>
               </select>
             </div>
