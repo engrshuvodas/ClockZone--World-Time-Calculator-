@@ -48,6 +48,42 @@
         </div>
       </section>
 
+      <!-- Time Converter Section -->
+      <section class="time-converter-section">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">TIME CONVERTER</h2>
+            <p class="section-description">Convert client meeting times to your local timezone instantly.</p>
+          </div>
+        </div>
+        <div class="converter-card">
+          <div class="converter-inputs">
+            <div class="converter-input-group">
+              <label for="client-time">Client Time</label>
+              <input type="time" id="client-time" class="time-input" />
+            </div>
+            <div class="converter-input-group">
+              <label for="client-date">Date</label>
+              <input type="date" id="client-date" class="date-input" />
+            </div>
+            <div class="converter-input-group">
+              <label for="client-timezone">Client Timezone</label>
+              <select id="client-timezone" class="timezone-select">
+                <option value="">Select timezone...</option>
+              </select>
+            </div>
+            <button class="convert-btn" id="convert-btn">
+              <span>Convert</span>
+            </button>
+          </div>
+          <div class="converter-results" id="converter-results">
+            <div class="result-placeholder">
+              <p>Enter a time and timezone to see the conversion</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- Main Content -->
       <div class="main-content">
         <!-- Local Time Section -->

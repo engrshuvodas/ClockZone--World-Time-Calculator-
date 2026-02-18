@@ -75,10 +75,21 @@ const modalClose = document.getElementById('modal-close');
 const clockSearchInput = document.getElementById('clock-search');
 const clockOptions = document.getElementById('clock-options');
 
+// Time Converter Elements
+const clientTimeInput = document.getElementById('client-time');
+const clientDateInput = document.getElementById('client-date');
+const clientTimezoneSelect = document.getElementById('client-timezone');
+const convertBtn = document.getElementById('convert-btn');
+const converterResults = document.getElementById('converter-results');
+
+// User's local timezone
+let userLocalTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
 // Detect user's local timezone
 function detectLocalTimezone() {
   try {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    userLocalTimezone = timezone;
     const tzData = timezonesData.find(tz => tz.timezone === timezone);
     
     if (tzData) {
@@ -90,6 +101,180 @@ function detectLocalTimezone() {
   } catch (error) {
     localTimezoneTag.textContent = 'Local Timezone';
   }
+}
+
+// Populate timezone dropdown for converter
+function populateTimezoneDropdown() {
+  // Sort timezones by city name for easier selection
+  const sortedTimezones = [...timezonesData].sort((a, b) => {
+    const cityA = a.city.toLowerCase();
+    const cityB = b.city.toLowerCase();
+    return cityA.localeCompare(cityB);
+  });
+  
+  sortedTimezones.forEach(tz => {
+    const option = document.createElement('option');
+    option.value = tz.timezone;
+    option.textContent = `${tz.city} / ${tz.country} (${tz.timezone})`;
+    clientTimezoneSelect.appendChild(option);
+  });
+}
+
+// Convert time from client timezone to local and other timezones
+function convertTime() {
+  const clientTime = clientTimeInput.value;
+  const clientDate = clientDateInput.value;
+  const clientTimezone = clientTimezoneSelect.value;
+  
+  if (!clientTime || !clientDate || !clientTimezone) {
+    converterResults.innerHTML = `
+      <div class="result-placeholder">
+        <p>Please fill in all fields to convert the time</p>
+      </div>
+    `;
+    return;
+  }
+  
+  try {
+    const [hours, minutes] = clientTime.split(':');
+    const [year, month, day] = clientDate.split('-');
+    
+    // Use a reliable method: create date in UTC that represents the time in client timezone
+    // We'll use iterative adjustment to find the correct UTC time
+    const utcTime = findUTCTimeForTimezoneTime(year, month, day, hours, minutes, clientTimezone);
+    const targetDate = new Date(utcTime);
+    
+    // Format results
+    const results = [];
+    
+    // Add local timezone result
+    const localTime = formatTime(targetDate, userLocalTimezone);
+    const localDate = formatDate(targetDate, userLocalTimezone);
+    const localTzData = timezonesData.find(tz => tz.timezone === userLocalTimezone);
+    const localCity = localTzData ? `${localTzData.city} / ${localTzData.country}` : userLocalTimezone.replace(/_/g, ' ');
+    
+    results.push({
+      timezone: userLocalTimezone,
+      city: localCity,
+      time: localTime,
+      date: localDate,
+      isLocal: true
+    });
+    
+    // Add all pinned clocks
+    pinnedClocks.forEach(clock => {
+      const clockTime = formatTime(targetDate, clock.timezone);
+      const clockDate = formatDate(targetDate, clock.timezone);
+      
+      results.push({
+        timezone: clock.timezone,
+        city: `${clock.city} / ${clock.country}`,
+        time: clockTime,
+        date: clockDate,
+        isLocal: false
+      });
+    });
+    
+    // Display results
+    displayConversionResults(results, clientTimezone);
+    
+  } catch (error) {
+    console.error('Conversion error:', error);
+    converterResults.innerHTML = `
+      <div class="result-placeholder">
+        <p>Error converting time. Please check your inputs.</p>
+      </div>
+    `;
+  }
+}
+
+// Find UTC time that corresponds to a given time in a specific timezone
+function findUTCTimeForTimezoneTime(year, month, day, hours, minutes, timezone) {
+  const dateStr = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}:00`;
+  
+  // Start with a guess: create date as if it's UTC
+  let guess = new Date(dateStr + 'Z');
+  
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    timeZone: timezone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false
+  });
+  
+  // Iteratively adjust until we get the right time
+  for (let i = 0; i < 10; i++) {
+    const parts = formatter.formatToParts(guess);
+    const tzHour = parseInt(parts.find(p => p.type === 'hour').value);
+    const tzMinute = parseInt(parts.find(p => p.type === 'minute').value);
+    const tzYear = parseInt(parts.find(p => p.type === 'year').value);
+    const tzMonth = parseInt(parts.find(p => p.type === 'month').value);
+    const tzDay = parseInt(parts.find(p => p.type === 'day').value);
+    
+    const desiredHour = parseInt(hours);
+    const desiredMinute = parseInt(minutes);
+    const desiredYear = parseInt(year);
+    const desiredMonth = parseInt(month);
+    const desiredDay = parseInt(day);
+    
+    // Check if we match
+    if (tzHour === desiredHour && tzMinute === desiredMinute && 
+        tzYear === desiredYear && tzMonth === desiredMonth && tzDay === desiredDay) {
+      return guess.getTime();
+    }
+    
+    // Calculate differences
+    const timeDiff = (desiredHour * 60 + desiredMinute) - (tzHour * 60 + tzMinute);
+    const dateDiff = (new Date(desiredYear, desiredMonth - 1, desiredDay).getTime()) - 
+                     (new Date(tzYear, tzMonth - 1, tzDay).getTime());
+    
+    // Adjust
+    guess = new Date(guess.getTime() + timeDiff * 60000 + dateDiff);
+  }
+  
+  return guess.getTime();
+}
+
+// Display conversion results
+function displayConversionResults(results, clientTimezone) {
+  const clientTzData = timezonesData.find(tz => tz.timezone === clientTimezone);
+  const clientCity = clientTzData ? `${clientTzData.city} / ${clientTzData.country}` : clientTimezone.replace(/_/g, ' ');
+  
+  let html = `
+    <div style="margin-bottom: 24px; padding: 20px; background: rgba(147, 51, 234, 0.1); border-radius: 12px; border: 1px solid rgba(147, 51, 234, 0.2);">
+      <div style="font-size: 0.75rem; font-weight: 600; color: var(--accent-purple); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Client Time</div>
+      <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px;">${clientTimeInput.value}</div>
+      <div style="font-size: 0.875rem; color: var(--text-secondary); opacity: 0.8;">${clientCity}</div>
+    </div>
+    <div class="converter-result-grid">
+  `;
+  
+  results.forEach(result => {
+    html += `
+      <div class="converter-result-card ${result.isLocal ? 'local-result' : ''}">
+        <div class="result-timezone">${result.isLocal ? 'Your Local Time' : result.timezone.replace(/_/g, ' ')}</div>
+        <div class="result-time">${result.time}</div>
+        <div class="result-date">${result.date}</div>
+        <div class="result-location">
+          <span class="result-location-dot"></span>
+          <span>${result.city}</span>
+        </div>
+      </div>
+    `;
+  });
+  
+  html += '</div>';
+  converterResults.innerHTML = html;
+  
+  // Add 3D tilt to result cards
+  setTimeout(() => {
+    document.querySelectorAll('.converter-result-card').forEach(card => {
+      add3DTiltEffect(card);
+    });
+  }, 50);
 }
 
 // Format time based on settings
@@ -162,6 +347,13 @@ function updateLocalTime() {
 
 // 3D Tilt Effect for Cards
 function add3DTiltEffect(card) {
+  // Check if already has tilt effect (prevent duplicate listeners)
+  if (card.dataset.hasTilt === 'true') {
+    return;
+  }
+  
+  card.dataset.hasTilt = 'true';
+  
   card.addEventListener('mousemove', (e) => {
     const rect = card.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -400,6 +592,25 @@ clockSearchInput.addEventListener('input', (e) => {
   populateClockOptions(e.target.value);
 });
 
+// Time Converter Event Listeners
+convertBtn.addEventListener('click', convertTime);
+
+// Auto-convert when inputs change (optional - can be removed if you prefer manual conversion only)
+let convertTimeout;
+[clientTimeInput, clientDateInput, clientTimezoneSelect].forEach(input => {
+  input.addEventListener('change', () => {
+    clearTimeout(convertTimeout);
+    convertTimeout = setTimeout(() => {
+      if (clientTimeInput.value && clientDateInput.value && clientTimezoneSelect.value) {
+        convertTime();
+      }
+    }, 500);
+  });
+});
+
+// Set today's date as default
+clientDateInput.valueAsDate = new Date();
+
 // Load saved settings
 const savedSettings = localStorage.getItem('settings');
 if (savedSettings) {
@@ -470,6 +681,7 @@ function addRippleEffect(button) {
 
 // Initialize
 detectLocalTimezone();
+populateTimezoneDropdown();
 createWorldClockCards(); // Create cards once on load
 updateAllClocks(); // Update times
 add3DTiltToLocalCard();
