@@ -415,10 +415,10 @@ View detailed version history and changelog:
 
 ## 🔗 Quick Links
 
-- 🌐 [Live Demo](https://engrshuvodas.github.io/Multi-Country-Time/)
-- 📖 [About & Version History](https://engrshuvodas.github.io/Multi-Country-Time/about.html)
+- 🌐 [Live Demo](https://clockzone-ten.vercel.app/)
+- 📖 [About & Version History](https://clockzone-ten.vercel.app/about.html)
 - 📝 [Changelog](CHANGELOG.md)
-- 💻 [GitHub Repository](https://github.com/engrshuvodas/Multi-Country-Time)
+- 💻 [GitHub Repository](https://github.com/engrshuvodas/ClockZone--World-Time-Calculator-.git)
 
 ---
 
