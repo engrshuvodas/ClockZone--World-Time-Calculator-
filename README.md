@@ -1,14 +1,14 @@
-# ⏰ Time Atlas
+# ⏰ ClockZone – World Time Calculator
 
 <div align="center">
 
-![Time Atlas](https://img.shields.io/badge/Time%20Atlas-Premium%20Time%20Dashboard-purple?style=for-the-badge)
-![Version](https://img.shields.io/badge/version-1.0.0-blue?style=for-the-badge)
+![ClockZone](https://img.shields.io/badge/ClockZone-World%20Time%20Calculator-purple?style=for-the-badge)
+![Version](https://img.shields.io/badge/version-2.2-blue?style=for-the-badge)
 ![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)
 
 **A premium, modern dashboard for managing multiple timezones and converting meeting times across the globe.**
 
-[Features](#-features) • [Demo](#-demo) • [Installation](#-installation) • [Usage](#-usage) • [Technology](#-technology)
+[Features](#-features) • [Demo](#-demo) • [Installation](#-installation) • [Usage](#-usage) • [Technology](#-technology) • [About](#-about)
 
 </div>
 
@@ -95,7 +95,9 @@
 - Smooth transitions and animations
 
 ### Live Demo
-Visit the [live demo](#) (add your GitHub Pages URL here)
+Visit the [live demo](https://engrshuvodas.github.io/Multi-Country-Time/)
+
+**About Page**: [View Version History & Developer Info](https://engrshuvodas.github.io/Multi-Country-Time/about.html)
 
 ---
 
@@ -107,9 +109,9 @@ Visit the [live demo](#) (add your GitHub Pages URL here)
 
 ### Quick Start
 
-1. **Clone the repository**
+1. **Clone the repository**  
    ```bash
-   git clone https://github.com/yourusername/Multi-Country-Time.git
+   git clone https://github.com/engrshuvodas/Multi-Country-Time.git
    cd Multi-Country-Time
    ```
 
@@ -360,12 +362,17 @@ SOFTWARE.
 
 ## 👤 Author
 
-**Your Name**
+**Engr. Shuvo Das**
 
-- 🌐 Website: [yourwebsite.com](https://yourwebsite.com)
-- 💼 LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourprofile)
-- 🐦 Twitter: [@yourhandle](https://twitter.com/yourhandle)
-- 📧 Email: your.email@example.com
+- 💬 WhatsApp: [Chat Now](https://wa.me/+8801765245872)
+- 💼 LinkedIn: [Profile](https://www.linkedin.com/in/engrshuvoda/)
+- 📺 YouTube: [Channel](https://www.youtube.com/channel/UCEJ0R871tF2PLT27q9azYWg)
+- 💻 GitHub: [Repositories](https://github.com/engrshuvodas)
+- 🎯 Fiverr: [Hire Me](https://www.fiverr.com/shuvo_das74886)
+- 🌐 Portfolio: [About Me](https://engrshuvodas.github.io/me/)
+- 📧 Email: [engrshuvoda@gmail.com](mailto:engrshuvoda@gmail.com)
+- 🐦 X (Twitter): [@engrshuvodas](https://x.com/engrshuvodas)
+- 👥 Facebook: [Engr Shuvo](https://www.facebook.com/engr.shuvo74886/)
 
 ### Acknowledgments
 
@@ -390,21 +397,37 @@ If you find this project helpful, please consider:
 
 ## 📊 Project Status
 
-![GitHub stars](https://img.shields.io/github/stars/yourusername/Multi-Country-Time?style=social)
-![GitHub forks](https://img.shields.io/github/forks/yourusername/Multi-Country-Time?style=social)
-![GitHub issues](https://img.shields.io/github/issues/yourusername/Multi-Country-Time)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/yourusername/Multi-Country-Time)
+![GitHub stars](https://img.shields.io/github/stars/engrshuvodas/Multi-Country-Time?style=social)
+![GitHub forks](https://img.shields.io/github/forks/engrshuvodas/Multi-Country-Time?style=social)
+![GitHub issues](https://img.shields.io/github/issues/engrshuvodas/Multi-Country-Time)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/engrshuvodas/Multi-Country-Time)
 
-**Current Version**: 1.0.0  
+**Current Version**: 2.2  
 **Status**: ✅ Active Development  
-**Last Updated**: February 2025
+**Last Updated**: February 18, 2025
+
+## 📝 Version History
+
+View detailed version history and changelog:
+- [About Page](about.html) - Interactive version dropdown with details
+- [CHANGELOG.md](CHANGELOG.md) - Complete changelog
+- [PROMPT.md](PROMPT.md) - Project creation prompts and documentation
+
+## 🔗 Quick Links
+
+- 🌐 [Live Demo](https://engrshuvodas.github.io/Multi-Country-Time/)
+- 📖 [About & Version History](https://engrshuvodas.github.io/Multi-Country-Time/about.html)
+- 📝 [Changelog](CHANGELOG.md)
+- 💻 [GitHub Repository](https://github.com/engrshuvodas/Multi-Country-Time)
 
 ---
 
 <div align="center">
 
-**Made with ❤️ for global professionals**
+**Made with ❤️ by [Engr. Shuvo Das](https://github.com/engrshuvodas) for global professionals**
 
-[⬆ Back to Top](#-time-atlas)
+© 2025 ClockZone – World Time Calculator v2.2
+
+[⬆ Back to Top](#-clockzone--world-time-calculator)
 
 </div>

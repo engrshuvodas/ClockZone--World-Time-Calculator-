@@ -43,7 +43,7 @@ const timezonesData = [
 
 // Settings
 let settings = {
-  timeFormat: '24', // '24' or '12'
+  timeFormat: '12', // '24' or '12' - Default is 12-hour
   dateFormat: 'short' // 'short', 'long', or 'numeric'
 };
 
@@ -752,9 +752,17 @@ updateConverterMode();
 // Load saved settings
 const savedSettings = localStorage.getItem('settings');
 if (savedSettings) {
-  settings = { ...settings, ...JSON.parse(savedSettings) };
+  const parsed = JSON.parse(savedSettings);
+  settings = { 
+    timeFormat: parsed.timeFormat || '12', // Default to 12-hour if not set
+    dateFormat: parsed.dateFormat || 'short'
+  };
   timeFormatSelect.value = settings.timeFormat;
   dateFormatSelect.value = settings.dateFormat;
+} else {
+  // Set default to 12-hour format
+  timeFormatSelect.value = '12';
+  settings.timeFormat = '12';
 }
 
 // Add smooth number transitions for time updates
@@ -816,6 +824,28 @@ function addRippleEffect(button) {
     }, 600);
   });
 }
+
+// Settings Toggle
+const settingsToggleBtn = document.getElementById('settings-toggle-btn');
+const settingsCloseBtn = document.getElementById('settings-close-btn');
+const displaySettings = document.getElementById('display-settings');
+
+settingsToggleBtn.addEventListener('click', () => {
+  displaySettings.classList.add('active');
+});
+
+settingsCloseBtn.addEventListener('click', () => {
+  displaySettings.classList.remove('active');
+});
+
+// Close settings when clicking outside
+document.addEventListener('click', (e) => {
+  if (!displaySettings.contains(e.target) && 
+      !settingsToggleBtn.contains(e.target) && 
+      displaySettings.classList.contains('active')) {
+    displaySettings.classList.remove('active');
+  }
+});
 
 // Initialize
 detectLocalTimezone();

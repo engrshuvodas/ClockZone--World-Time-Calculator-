@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>About - ClockZone World Time Calculator</title>
+    <link rel="shortcut icon" href="https://cdn-icons-png.flaticon.com/512/3175/3175021.png" type="image/x-icon">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+      .about-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+      }
+      .about-header {
+        text-align: center;
+        margin-bottom: 50px;
+      }
+      .about-header h1 {
+        font-size: 3rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #FFFFFF 0%, #E0E0E0 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 10px;
+      }
+      .version-selector {
+        margin: 40px 0;
+      }
+      .version-selector select {
+        width: 100%;
+        max-width: 400px;
+        padding: 12px 16px;
+        background: var(--bg-glass);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        color: var(--text-secondary);
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .version-details {
+        background: var(--bg-glass);
+        backdrop-filter: blur(30px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 40px;
+        margin-top: 30px;
+        box-shadow: var(--shadow-xl);
+      }
+      .version-details h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid rgba(147, 51, 234, 0.3);
+      }
+      .version-date {
+        color: var(--accent-purple);
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+      }
+      .version-features {
+        list-style: none;
+        padding: 0;
+      }
+      .version-features li {
+        padding: 12px 0;
+        padding-left: 30px;
+        position: relative;
+        color: var(--text-secondary);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .version-features li:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: var(--accent-green);
+        font-weight: 700;
+      }
+      .developer-section {
+        background: var(--bg-glass);
+        backdrop-filter: blur(30px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 40px;
+        margin-top: 50px;
+        box-shadow: var(--shadow-xl);
+        text-align: center;
+      }
+      .developer-section h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 10px;
+      }
+      .developer-name {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--accent-purple);
+        margin-bottom: 30px;
+      }
+      .social-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 30px;
+      }
+      .social-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        background: rgba(66, 153, 225, 0.1);
+        border: 1px solid rgba(66, 153, 225, 0.3);
+        border-radius: 10px;
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+      .social-link:hover {
+        background: rgba(66, 153, 225, 0.2);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+      }
+      .back-link {
+        display: inline-block;
+        margin-bottom: 30px;
+        padding: 10px 20px;
+        background: var(--bg-glass);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+      .back-link:hover {
+        transform: translateX(-5px);
+        border-color: var(--accent-purple);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="about-container">
+      <a href="index.html" class="back-link">← Back to ClockZone</a>
+      
+      <div class="about-header">
+        <h1>About ClockZone</h1>
+        <p class="subtitle">World Time Calculator v2.2</p>
+      </div>
+
+      <!-- Version History -->
+      <div class="version-selector">
+        <select id="version-selector">
+          <option value="2.2">Version 2.2 (Current)</option>
+          <option value="2.1">Version 2.1</option>
+          <option value="2.0">Version 2.0</option>
+          <option value="1.0">Version 1.0</option>
+        </select>
+      </div>
+
+      <div class="version-details" id="version-details">
+        <!-- Version details will be populated by JavaScript -->
+      </div>
+
+      <!-- Developer Section -->
+      <div class="developer-section">
+        <h2>Developer</h2>
+        <div class="developer-name">Engr. Shuvo Das</div>
+        <p style="color: var(--text-secondary); opacity: 0.8; margin-bottom: 30px;">
+          Full Stack Developer & UI/UX Designer
+        </p>
+        
+        <div class="social-links">
+          <a href="https://wa.me/+8801765245872" class="social-link" target="_blank">
+            <span>💬</span> WhatsApp
+          </a>
+          <a href="https://www.linkedin.com/in/engrshuvoda/" class="social-link" target="_blank">
+            <span>💼</span> LinkedIn
+          </a>
+          <a href="https://www.youtube.com/channel/UCEJ0R871tF2PLT27q9azYWg" class="social-link" target="_blank">
+            <span>📺</span> YouTube
+          </a>
+          <a href="https://github.com/engrshuvodas" class="social-link" target="_blank">
+            <span>💻</span> GitHub
+          </a>
+          <a href="https://www.fiverr.com/shuvo_das74886" class="social-link" target="_blank">
+            <span>🎯</span> Fiverr
+          </a>
+          <a href="https://engrshuvodas.github.io/me/" class="social-link" target="_blank">
+            <span>🌐</span> Portfolio
+          </a>
+          <a href="mailto:engrshuvoda@gmail.com" class="social-link">
+            <span>📧</span> Email
+          </a>
+          <a href="https://x.com/engrshuvodas" class="social-link" target="_blank">
+            <span>🐦</span> X (Twitter)
+          </a>
+          <a href="https://www.facebook.com/engr.shuvo74886/" class="social-link" target="_blank">
+            <span>👥</span> Facebook
+          </a>
+        </div>
+      </div>
+
+      <!-- Copyright -->
+      <div style="text-align: center; margin-top: 50px; padding-top: 30px; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+        <p style="color: var(--text-secondary); opacity: 0.7;">
+          © 2025 ClockZone – World Time Calculator v2.2<br>
+          Made with ❤️ by <strong>Engr. Shuvo Das</strong>
+        </p>
+      </div>
+    </div>
+
+    <script>
+      const versionData = {
+        '2.2': {
+          date: 'February 2025',
+          features: [
+            'Added reverse time conversion (Local → Client)',
+            'Enhanced UI with version history page',
+            'Added developer information and social links',
+            'Improved timezone conversion accuracy',
+            'Added version badge and copyright notices',
+            'Enhanced responsive design for mobile devices',
+            'Added about page with version dropdown',
+            'Improved error handling in time conversions'
+          ]
+        },
+        '2.1': {
+          date: 'January 2025',
+          features: [
+            'Added bidirectional time converter',
+            'Implemented forward conversion (Client → Local)',
+            'Enhanced glassmorphism design effects',
+            'Added 3D card tilt animations',
+            'Improved timezone detection',
+            'Added persistent storage for settings',
+            'Enhanced modal interactions'
+          ]
+        },
+        '2.0': {
+          date: 'December 2024',
+          features: [
+            'Complete redesign with premium UI',
+            'Added world clock management system',
+            'Implemented real-time clock synchronization',
+            'Added display settings (time/date formats)',
+            'Created glassmorphism design system',
+            'Added smooth animations and transitions',
+            'Implemented localStorage for data persistence'
+          ]
+        },
+        '1.0': {
+          date: 'November 2024',
+          features: [
+            'Initial release',
+            'Basic world clock display',
+            'Simple timezone selection',
+            'Basic responsive layout',
+            'Core functionality implementation'
+          ]
+        }
+      };
+
+      const versionSelector = document.getElementById('version-selector');
+      const versionDetails = document.getElementById('version-details');
+
+      function displayVersion(version) {
+        const data = versionData[version];
+        const isCurrent = version === '2.2';
+        
+        versionDetails.innerHTML = `
+          <h2>Version ${version} ${isCurrent ? '<span style="color: var(--accent-green); font-size: 0.8em;">(Current)</span>' : ''}</h2>
+          <div class="version-date">Released: ${data.date}</div>
+          <ul class="version-features">
+            ${data.features.map(feature => `<li>${feature}</li>`).join('')}
+          </ul>
+        `;
+      }
+
+      versionSelector.addEventListener('change', (e) => {
+        displayVersion(e.target.value);
+      });
+
+      // Display current version on load
+      displayVersion('2.2');
+    </script>
+  </body>
+</html>

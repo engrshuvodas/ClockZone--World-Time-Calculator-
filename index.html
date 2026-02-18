@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Time Atlas</title>
+    <title>ClockZone – World Time Calculator v2.2</title>
     <link rel="shortcut icon" href="https://cdn-icons-png.flaticon.com/512/3175/3175021.png" type="image/x-icon">
     <link rel="stylesheet" href="css/styles.css">
   </head>
@@ -13,28 +13,49 @@
       <!-- Header -->
       <header class="header">
         <div class="header-left">
-          <h1 class="title">Time Atlas</h1>
-          <p class="subtitle">A calm dashboard for your local time and the cities that matter.</p>
+          <h1 class="title">ClockZone</h1>
+          <p class="subtitle">World Time Calculator – A calm dashboard for your local time and the cities that matter.</p>
         </div>
         <div class="header-right">
+          <button class="version-btn">v2.2</button>
           <div class="status-indicator">
             <span class="status-dot"></span>
             <span class="status-text">LIVE</span>
             <span class="status-subtext">SYNCHRONIZED</span>
           </div>
+          <a href="about.html" class="about-link">About</a>
         </div>
       </header>
 
+      <!-- Settings Icon Button -->
+      <div class="settings-toggle-wrapper">
+        <button class="settings-toggle-btn" id="settings-toggle-btn" title="Display Settings">
+          <svg class="settings-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1m15.364-5.636l-4.243 4.243m0 4.243l4.243 4.243M4.636 4.636l4.243 4.243m0 4.243l-4.243 4.243"></path>
+          </svg>
+        </button>
+      </div>
+
       <!-- Display Settings -->
-      <section class="display-settings">
-        <h2 class="section-title">DISPLAY SETTINGS</h2>
+      <section class="display-settings" id="display-settings">
+        <div class="settings-header">
+          <div class="settings-title-wrapper">
+            <svg class="settings-icon-small" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1m15.364-5.636l-4.243 4.243m0 4.243l4.243 4.243M4.636 4.636l4.243 4.243m0 4.243l-4.243 4.243"></path>
+            </svg>
+            <h2 class="section-title">DISPLAY SETTINGS</h2>
+            <button class="settings-close-btn" id="settings-close-btn">&times;</button>
+          </div>
+        </div>
         <p class="section-description">Control the time format and how dates are shown across all clocks.</p>
         <div class="settings-controls">
           <div class="setting-group">
             <label for="time-format">Time format</label>
             <select id="time-format" class="dropdown">
-              <option value="24">24-hour</option>
               <option value="12">12-hour</option>
+              <option value="24">24-hour</option>
             </select>
           </div>
           <div class="setting-group">
@@ -151,6 +172,19 @@
         </div>
       </div>
     </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-content">
+        <p class="copyright">
+          © 2025 ClockZone v2.2 | Made with ❤️ by <a href="about.html" class="developer-link">Engr. Shuvo Das</a>
+        </p>
+        <p class="footer-links">
+          <a href="about.html">About</a> | 
+          <a href="CHANGELOG.md">Changelog</a>
+        </p>
+      </div>
+    </footer>
 
     <script src="js/script.js"></script>
   </body>
